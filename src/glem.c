@@ -45,7 +45,7 @@
 
 #define GLEM_VER_MAJ		0
 #define GLEM_VER_MIN		1
-#define GLEM_VER_PATCH		0
+#define GLEM_VER_PATCH		1
 #define GL_PAD			100
 #define glcd_get_pixel(a,x,y) (a[y * (glcd_width / 8) + (x / 8)] & (1 << (7 - x % 8)));
 #define convert_local_to_glut(x,y) do { x = window_origin_x + (x * scale_factor); \
