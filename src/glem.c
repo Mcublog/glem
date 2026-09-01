@@ -43,8 +43,9 @@
 #include <glem.h>
 #include "private.h"
 
-#define GLEM_VER_MAJ		1
-#define GLEM_VER_MIN		2
+#define GLEM_VER_MAJ		0
+#define GLEM_VER_MIN		1
+#define GLEM_VER_PATCH		0
 #define GL_PAD			100
 #define glcd_get_pixel(a,x,y) (a[y * (glcd_width / 8) + (x / 8)] & (1 << (7 - x % 8)));
 #define convert_local_to_glut(x,y) do { x = window_origin_x + (x * scale_factor); \
@@ -68,7 +69,7 @@ int redisplay_interval;
 void glem_usage()
 {
 	printf( "\n"
-		"glem - Graphical LCD EMulator v%d.%d\n"
+		"glem - Graphical LCD EMulator v%d.%d.%d\n"
 		"\n"
 		"USAGE\n"
 			"\tglem <-r RESOLUTION> [OPTIONS]\n"
@@ -77,7 +78,7 @@ void glem_usage()
 			"\t-s SCALE      -\t Pixel scale ratio. Default 1:2 (-s2)\n"
 			"\t-v VERBOSE    -\t Don't go into bacground\n"
 			"\t-h HELP       -\t Display this help message\n"
-		"\n", GLEM_VER_MAJ, GLEM_VER_MAJ
+		"\n", GLEM_VER_MAJ, GLEM_VER_MAJ, GLEM_VER_PATCH
 	);
 }
 
@@ -427,9 +428,10 @@ int main(int argc, char **argv)
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
 
 	char win_name[64];
-	snprintf(win_name, 64, "glem v%d.%d (%dx%d-%d)",GLEM_VER_MAJ,
-			GLEM_VER_MIN, glcd_width, glcd_height, scale_factor);
-	win_name[63]=0; // paranoia: force terminate.
+        snprintf(win_name, 64, "glem v%d.%d.%d (%dx%d-%d)", GLEM_VER_MAJ,
+                 GLEM_VER_MIN, GLEM_VER_PATCH, glcd_width, glcd_height,
+                 scale_factor);
+        win_name[63]=0; // paranoia: force terminate.
 
 	int win_id = glutCreateWindow(win_name);
 	glutSetWindow(win_id);
@@ -446,4 +448,3 @@ int main(int argc, char **argv)
 	glutMainLoop();	// This is blocking!
 	return 0;
 }
-
