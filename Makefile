@@ -63,7 +63,7 @@ endif
 CC       := gcc
 LIBS     += -lglem -pthread
 
-all: dirs lib/libglem.a glem examples
+all: dirs lib/libglem.a lib/libglem.so glem examples
 
 glem: obj/glem.o
 	@echo "Building glem server"
@@ -72,6 +72,10 @@ glem: obj/glem.o
 lib/libglem.a: obj/libglem.o
 	@echo "Building libglem.a"
 	@ar rcs lib/libglem.a obj/libglem.o
+
+lib/libglem.so: obj/libglem.o
+	@echo "Building libglem.so"
+	@gcc -shared -o lib/libglem.so obj/libglem.o
 
 examples:
 	@make -s -C examples all
