@@ -51,7 +51,7 @@ void glem_init(int glcd_width, int glcd_height, int flags)
 	glem_flags |= GLEM_INIT_DONE;
 }
 
-static glem_command_t *glem_make_cmd_frame(uint8_t *frame, int frame_len)
+static glem_command_t *glem_make_cmd_frame(uint8_t *frame, int frame_len, int offset)
 {
 	int total_len = sizeof(glem_command_t) + sizeof(struct glem_cmd_frame)+frame_len;
 	uint8_t *data = malloc(total_len);
@@ -67,6 +67,7 @@ static glem_command_t *glem_make_cmd_frame(uint8_t *frame, int frame_len)
 	cmd_frame->res_x = glem_glcd_width;
 	cmd_frame->res_y = glem_glcd_height;
 	cmd_frame->buf_len = frame_len;
+	cmd_frame->offset = offset;
 	memcpy(cmd_frame->buf, frame, frame_len);
 	return cmd;
 }
@@ -112,7 +113,7 @@ static int glem_connect()
 	if (connect(fd , (struct sockaddr *)&server , sizeof(server)) < 0) {
 		perror ("glem: Failed at connect to server");
 		close(fd);
-		return 1;
+		return -1;
 	}
 
 	return fd;
@@ -120,8 +121,13 @@ static int glem_connect()
 
 void glem_write(uint8_t *buf, int len)
 {
+	glem_write_at(buf, len, 0);
+}
+
+void glem_write_at(uint8_t *buf, int len, int offset)
+{
 	int ret, glem_fd;
-	glem_command_t *c= glem_make_cmd_frame(buf, len);
+	glem_command_t *c= glem_make_cmd_frame(buf, len, offset);
 	if (c == NULL) {
 		printf("glem: error creating command\n");
 		return;

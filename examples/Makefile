@@ -1,6 +1,7 @@
 
 EXAMPLES += 01_pixel-by-pixel
 EXAMPLES += 02_draw-symbols
+EXAMPLES += 03_line-by-line
 
 all:
 	@for dir in $(EXAMPLES); do make -s -C $$dir all; done

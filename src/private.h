@@ -29,6 +29,8 @@
 #ifndef _PRIVATE_H_
 #define _PRIVATE_H_
 
+#include <stdint.h>
+
 enum glem_command_e {
 	GLEM_CMD_SET_PIX,
 	GLEM_CMD_SEND_FRAME,
@@ -46,6 +48,7 @@ struct glem_cmd_frame {
 	int res_x;
 	int res_y;
 	int buf_len;
+	int offset;
 	uint8_t buf[];
 };
 

@@ -8,6 +8,7 @@ SYNOPSIS
 
 	void glem_init(int glcd_width, int glcd_height, int flags);
 	void glem_write(uint8_t *buf, int len);
+	void glem_write_at(uint8_t *buf, int len, int offset);
 	void glem_setpix(int x, int y, int color);
 
 
@@ -30,7 +31,18 @@ has to be launched before any of the following calls can be made.
 * void **glem_write**(uint8_t *buf, int len);:
 	writes the frame buffer pointed to by _buf_ of lenth _len_ into the
 	display. The frame buffer has to be properly encoded (see _DATA
-	ENCODING_) to get desired output on screen.
+	ENCODING_) to get desired output on screen. Equivalent to
+	glem_write_at(buf, len, 0).
+
+* void **glem_write_at**(uint8_t *buf, int len, int offset);:
+	writes _len_ bytes pointed to by _buf_ into the frame buffer of the
+	display at byte _offset_. This allows partial frame updates, for
+	example, writing a single display line: for a row-major display the
+	byte offset of line _y_ is `y * (glcd_width / 8)`. Consecutive
+	partial writes accumulate in the frame buffer, they do not clear
+	previously written data. The range `offset .. offset + len - 1` must
+	lie within the frame buffer (`0 .. glcd_width*glcd_height/8 - 1`);
+	otherwise the write is rejected by the server.
 
 * void **glem_setpix**(int x, int y, int color);:
 	sets pixel _(x,y)_ with _color_.

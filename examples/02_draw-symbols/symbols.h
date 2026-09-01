@@ -31,6 +31,6 @@
 
 #include "objects.h"
 
-const symbol_t glem_logo;
+extern const symbol_t glem_logo;
 
 #endif

@@ -37,10 +37,12 @@
 // For those who prefer camelCase over snake_case
 #define glemInit glem_init
 #define glemWrite glem_write
+#define glemWriteAt glem_write_at
 #define glemSetPix glem_setpix
 
 void glem_init(int glcd_width, int glcd_height, int flags);
 void glem_write(uint8_t *buf, int len);
+void glem_write_at(uint8_t *buf, int len, int offset);
 void glem_setpix(int x, int y, int color);
 
 #endif

@@ -214,13 +214,15 @@ int glem_setpixel(struct glem_cmd_set_pixel *s)
 
 int glem_write_frame(struct glem_cmd_frame *s)
 {
+	int buf_len = glcd_width*glcd_height/8;
+
 	if (s->res_x != glcd_width || s->res_y != glcd_height)
 		return -1;
 
-	if (s->buf_len != (glcd_width*glcd_height/8))
+	if (s->offset < 0 || s->offset + s->buf_len > buf_len)
 		return -1;
 
-	memcpy(glcd_buf, s->buf, s->buf_len);
+	memcpy(glcd_buf + s->offset, s->buf, s->buf_len);
 	return 0;
 }
 
@@ -279,20 +281,32 @@ int glem_process_command(glem_command_t *cmd)
 void glem_socket_listener(void *args)
 {
 	int est_read_size = glcd_width*glcd_height/8 + 250; // +250 for meta data.
-	int server_fd, client_fd;
+	int server_fd, client_fd, optval = 1;
 	struct sockaddr_in serverAddr;
 	struct sockaddr_storage serverStorage;
 
 	server_fd = socket(PF_INET, SOCK_STREAM, 0);
+	if (server_fd < 0) {
+		die_error("socket");
+	}
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_port = htons(31337);
 	serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
 
-	bind(server_fd, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
+	/* Allow immediate restart: without SO_REUSEADDR, a server that closed
+	 * connections ends up with sockets in TIME_WAIT state which block the
+	 * next bind() on this port for ~60s. */
+	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) < 0) {
+		die_error("setsockopt(SO_REUSEADDR)");
+	}
 
-	if(listen(server_fd, 5) != 0) {
-		printf("listen on socket!");
+	if (bind(server_fd, (struct sockaddr *) &serverAddr, sizeof(serverAddr)) < 0) {
+		die_error("bind");
+	}
+
+	if(listen(server_fd, 64) != 0) {
+		die_error("listen");
 	}
 
 	while (1) {
