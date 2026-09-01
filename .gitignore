@@ -10,3 +10,5 @@ loc/
 .project
 .settings/
 .vscode
+
+examples/03_line-by-line/line-by-line
