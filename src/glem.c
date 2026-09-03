@@ -78,7 +78,7 @@ void glem_usage()
 			"\t-s SCALE      -\t Pixel scale ratio. Default 1:2 (-s2)\n"
 			"\t-v VERBOSE    -\t Don't go into bacground\n"
 			"\t-h HELP       -\t Display this help message\n"
-		"\n", GLEM_VER_MAJ, GLEM_VER_MAJ, GLEM_VER_PATCH
+		"\n", GLEM_VER_MAJ, GLEM_VER_MIN, GLEM_VER_PATCH
 	);
 }
 
